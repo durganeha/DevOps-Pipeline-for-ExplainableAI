@@ -121,7 +121,7 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     # Using replace() instead of a dtype check for the condition, since
     # newer pandas versions can infer string columns as dtype "str" rather
     # than "object", which would silently skip a dtype-gated map().
-    df[LABEL_COL] = df[LABEL_COL].replace({"Y": 1, "N": 0})
+    df[LABEL_COL] = df[LABEL_COL].replace({"Y": 1, "N": 0}).infer_objects(copy=False)
     df[LABEL_COL] = pd.to_numeric(df[LABEL_COL], errors="coerce")
 
     # Fill missing values (the real dataset has several NaNs in these columns)
