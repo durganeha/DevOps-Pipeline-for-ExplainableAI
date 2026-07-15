@@ -1,0 +1,24 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# Data & models (keep repo light; data_loader.py regenerates synthetic
+# fallback automatically, and train_model.py regenerates the model)
+data/processed/*.csv
+models/*.pkl
+
+# Generated artifacts
+fairness_report.json
+cusum_drift_plot.png
+shap_summary.png
+
+# Environments
+.venv/
+venv/
+.env
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/

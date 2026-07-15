@@ -1,0 +1,56 @@
+name: Fairness Gate
+
+# Runs automatically on every push and pull request. This is the heart of the
+# "automated DevOps pipeline for validating model fairness" — no model gets
+# merged or deployed unless it passes unit tests AND the Disparate Impact check.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  fairness-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: |
+          pytest tests/ -v
+
+      - name: Run fairness gate
+        run: |
+          python scripts/fairness_gate.py --threshold 0.8 --output fairness_report.json
+
+      - name: Upload fairness report as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fairness-report
+          path: fairness_report.json
+
+      - name: Run CUSUM drift detection
+        if: always()
+        run: |
+          python scripts/cusum_drift_detection.py
+
+      - name: Upload drift plot as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cusum-drift-plot
+          path: cusum_drift_plot.png

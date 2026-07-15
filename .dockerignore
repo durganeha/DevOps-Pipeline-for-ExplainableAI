@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.git/
+.gitignore
+*.md
+notebooks/
+docs/
+data/raw/*.csv
+.venv/
+venv/
